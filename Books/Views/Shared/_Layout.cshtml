@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿ @using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@inject Books.Resources.LocService L
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+@using Books.Resources
+@inject LocService SharedLocalizer
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,11 +16,31 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Books.styles.css" asp-append-version="true" />
-  <link rel="stylesheet" href="~/DataTable.css" />
+    <link rel="stylesheet" href="~/DataTable.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-   
 </head>
 <body>
+
+    @{
+        var current = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+        string url = "";
+        var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+        var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = L[c.TwoLetterISOLanguageName] })
+        .ToList();
+        var context = Context.Request;
+        @*This line get the current page url value*@
+        var queryString = context.QueryString.Value;
+        if (queryString == null || queryString == "")
+        {
+            url = context.Path;
+        }
+        else
+        {
+            url = context.Path + queryString;
+        }
+    }
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -27,6 +56,31 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+
+
+
+
+
+
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle pe-3" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Language
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                                <li>
+                                    <a asp-controller="lang" asp-action="changelanguage" asp-route-culture="fa-IR" class="navi-link">
+                                </li>
+                                <li> <a asp-action="SetLanguage" asp-controller="Language" asp-route-culture="fa" asp-route-returnUrl="@url" class="menu-link px-3 py-2"> <span class="menu-title">@L["Dari"]</span></a></li>
+                                <li>
+                                    <a asp-action="SetLanguage" asp-controller="Language" asp-route-culture="en-US" asp-route-returnUrl="@url" class="menu-link px-3 py-2">
+
+                                        <span class="menu-title">@L["English"]</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -50,7 +104,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/DataTable.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-       <script src="~/js/SweetAlertNotifaction.js"></script>
+    <script src="~/js/SweetAlertNotifaction.js"></script>
     @await RenderSectionAsync("myscript", required: false)
 </body>
 </html>

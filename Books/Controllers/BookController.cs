@@ -9,7 +9,6 @@ namespace Books.Controllers
     public class BookController : Controller
     {
         private IMediator mediator;
-
         public BookController(IMediator mediator)
         {
             this.mediator = mediator;
