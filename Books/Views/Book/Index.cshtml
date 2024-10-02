@@ -1,5 +1,4 @@
 ﻿@model Books.Application.DTO.Book.BookDTO
-@inject Books.Resources.LocService L
 <div class="container">
  <div class="row col-md-2"> 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#StudentModel">
@@ -101,7 +100,7 @@
                     <input asp-for="ISBN" id="Isbn" type="hidden" class="form-control" />
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label asp-for="BookName" class="form-label">@L["BookName"]</label>
+                            <label asp-for="BookName" class="form-label">BookName</label>
                             <input asp-for="BookName" class="form-control" placeholder="Enter Book Name" />
                             <span asp-validation-for="BookName" class="text-danger"></span>
                         </div>
@@ -109,12 +108,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label asp-for="Title" class="form-label">@L["Title"]</label>
+                            <label asp-for="Title" class="form-label">Title</label>
                             <input asp-for="Title" class="form-control" placeholder="Enter Title" />
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Description" class="form-label">@L["Description"]</label>
+                            <label asp-for="Description" class="form-label">Description</label>
                             <input asp-for="Description" class="form-control" placeholder="Enter Description" />
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
@@ -122,12 +121,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label asp-for="Author" class="form-label">@L["Author"]</label>
+                            <label asp-for="Author" class="form-label">Author</label>
                             <input asp-for="Author" class="form-control" placeholder="Enter Author" />
                             <span asp-validation-for="Author" class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="PublishDate" class="form-label">@L["PublishDate"]</label>
+                            <label asp-for="PublishDate" class="form-label">PublishDate</label>
                             <input asp-for="PublishDate" class="form-control" type="date" />
                             <span asp-validation-for="PublishDate" class="text-danger"></span>
                         </div>
