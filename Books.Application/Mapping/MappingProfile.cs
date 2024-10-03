@@ -13,7 +13,9 @@ namespace Books.Application.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<BookModel,BookDTO>().ReverseMap();
+
+            CreateMap<BookModel, BookDTO>().ReverseMap();
+        
         }
     }
 }

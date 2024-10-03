@@ -25,10 +25,11 @@ namespace Books.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> AddBooks(BookDTO bookDTO)
-        {
-                var addingbooks = await mediator.Send(new AddBookRequest { Bookdto = bookDTO });
-                return Json(new { data = addingbooks });
+        {  
+            var addingBooks = await mediator.Send(new AddBookRequest { Bookdto = bookDTO });
+            return Json(new { data = addingBooks });
         }
+
         [HttpGet]
         public async Task<IActionResult> GetBook(int Id)
         {

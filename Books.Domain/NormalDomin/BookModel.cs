@@ -1,4 +1,5 @@
 ﻿using Books.Domain.BaseDomin;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,7 +23,7 @@ namespace Books.Domain.NormalDomin
         [Required]
         public string Author {  get; set; }
         [Required]
-        public DateOnly PublishDate { get; set; }   
+        public DateOnly PublishDate { get; set; }
     }
      
 }
