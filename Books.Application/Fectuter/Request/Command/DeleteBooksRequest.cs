@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Books.Application.Fectuter.Request.Command
 {
-    public class DeleteBooksRequest:IRequest<string>
+    public class DeleteBooksRequest:IRequest<int>
     {
       public BookDTO BookDTO { get; set; }  
     }

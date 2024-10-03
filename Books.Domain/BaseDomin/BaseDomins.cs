@@ -9,6 +9,7 @@ namespace Books.Domain.BaseDomin
 {
     public class BaseDomins
     {
+        [Key]
         public int Id { get; set; }
     }
 }

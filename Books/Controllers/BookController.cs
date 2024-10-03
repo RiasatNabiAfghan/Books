@@ -30,10 +30,10 @@ namespace Books.Controllers
                 return Json(new { data = addingbooks });
         }
         [HttpGet]
-        public async Task<IActionResult> GetBook(string isbn)
+        public async Task<IActionResult> GetBook(int Id)
         {
-            var findisbn = await mediator.Send(new GetBookByIdRequest {isbn=isbn});
-            return Json(new { data = findisbn });
+            var findId = await mediator.Send(new GetBookByIdRequest {Id=Id});
+            return Json(new { data = findId });
         }
 
         [HttpPost]

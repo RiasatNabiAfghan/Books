@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Books.Infrastructer\Books.Infrastructer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
 </Project>

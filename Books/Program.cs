@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructure(builder.Configuration);
+//Localization
  var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {

@@ -37,9 +37,9 @@ namespace Books.Infrastructer.Services
             return await context.Set<Entity>().ToListAsync();
         }
 
-        public Entity GetBookById(string isbn)
+        public Entity GetBookById(int Id)
         {
-            return context.Set<Entity>().Find(isbn);
+            return context.Set<Entity>().Find(Id);
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Books.Application.Fectuter.Handler.Command
 {
-    public class DeleteBooksRequestHandler : IRequestHandler<DeleteBooksRequest, string>
+    public class DeleteBooksRequestHandler : IRequestHandler<DeleteBooksRequest, int>
     {
         private Iuniteofwork uniteofwork;
         private IMapper mapper;
@@ -21,15 +21,15 @@ namespace Books.Application.Fectuter.Handler.Command
           this.uniteofwork= uniteofwork;
             this.mapper= mapper;
         }
-        public async Task<string> Handle(DeleteBooksRequest request, CancellationToken cancellationToken)
+        public async Task<int> Handle(DeleteBooksRequest request, CancellationToken cancellationToken)
         {
 
-            var FindBookIsbn = uniteofwork.BookRepository.GetBookById(request.BookDTO.ISBN);
+            var FindBookIsbn = uniteofwork.BookRepository.GetBookById(request.BookDTO.Id);
             var Bookmap = mapper.Map<BookDTO>(FindBookIsbn);
             uniteofwork.BookRepository.DeleteBook(FindBookIsbn) ;
             uniteofwork.SaveChanges();
             var bookdto = mapper.Map<BookDTO>(Bookmap);
-            return bookdto.ISBN;
+            return bookdto.Id;
 
         }
     }

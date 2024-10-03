@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Books.Domain.NormalDomin
 {
-    public class BookModel
+    public class BookModel:BaseDomins
     {
         [Required]
         public string BookName { get; set; }
@@ -18,7 +18,6 @@ namespace Books.Domain.NormalDomin
         [Required]
         public string Description { get; set; }
         [Required]
-        [Key]
         public String ISBN {  get; set; }
         [Required]
         public string Author {  get; set; }

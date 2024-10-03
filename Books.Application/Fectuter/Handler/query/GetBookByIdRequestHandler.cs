@@ -23,7 +23,7 @@ namespace Books.Application.Fectuter.Handler.query
         }
         public async Task<BookDTO> Handle(GetBookByIdRequest request, CancellationToken cancellationToken)
         {
-            var FindBook = uniteofwork.BookRepository.GetBookById(request.isbn);
+            var FindBook = uniteofwork.BookRepository.GetBookById(request.Id);
             var mapping=mapper.Map<BookDTO>(FindBook);
             return mapping;
         }
