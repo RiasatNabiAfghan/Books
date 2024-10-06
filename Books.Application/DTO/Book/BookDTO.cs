@@ -23,5 +23,7 @@ namespace Books.Application.DTO.Book
 
         [Required(ErrorMessage = "Publish Date is required.")]
         public DateOnly PublishDate { get; set; }
+        public IFormFile Photo { get; set; }
+        public required string PhotoPath { get; set; }
     }
 }

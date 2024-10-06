@@ -2,7 +2,9 @@
 using Books.Application.DTO.Book;
 using Books.Application.Fectuter.Request.Command;
 using Books.Application.Presistance;
+using Books.Domain.NormalDomin;
 using MediatR;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Books.Application.Fectuter.Handler.Command
 {
@@ -18,8 +20,15 @@ namespace Books.Application.Fectuter.Handler.Command
         }
         public async Task<BookDTO> Handle(AddBookRequest request, CancellationToken cancellationToken)
         {
-
-            throw new NotImplementedException();    
+            var bookModel = mapper.Map<BookModel>(request.Bookdto);
+            if (!string.IsNullOrEmpty(request.Bookdto.PhotoPath))
+            {
+                bookModel.PhotoPath = request.Bookdto.PhotoPath;
+            }
+            uniteofwork.BookRepository.AddBook(bookModel);
+             uniteofwork.SaveChanges();
+            var bookDto = mapper.Map<BookDTO>(bookModel);
+            return bookDto;
         }
 
     }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Books.Application.DTO.Book;
 using Books.Application.Fectuter.Request.Command;
 using Books.Application.Presistance;
 using MediatR;
+using System.Text.RegularExpressions;
 
 namespace Books.Application.Fectuter.Handler.Command
 {
@@ -11,7 +11,7 @@ namespace Books.Application.Fectuter.Handler.Command
         private Iuniteofwork uniteofwork;
         private IMapper mapper;
 
-        public UpdateBookRequestHandler(Iuniteofwork uniteofwork,IMapper mapper)
+        public UpdateBookRequestHandler(Iuniteofwork uniteofwork, IMapper mapper)
         {
             this.uniteofwork = uniteofwork;
             this.mapper = mapper;
@@ -19,12 +19,18 @@ namespace Books.Application.Fectuter.Handler.Command
         }
         public async Task<int> Handle(UpdateBookRequest request, CancellationToken cancellationToken)
         {
-            var FindBookIsbn =   uniteofwork.BookRepository.GetBookById(request.BookDTO.Id);
-            var Bookmap = mapper.Map<BookDTO, Domain.NormalDomin.BookModel>(request.BookDTO,FindBookIsbn);
-            uniteofwork.BookRepository.UpdateBook(Bookmap);
-            uniteofwork.SaveChanges();
-            var bookdto = mapper.Map<BookDTO>(Bookmap);
-            return bookdto.Id;
+            var existingBook =  uniteofwork.BookRepository.GetBookById(request.UpdateBookDto.Id);
+            mapper.Map(request.UpdateBookDto, existingBook);
+             uniteofwork.SaveChanges();
+            return existingBook.Id; 
         }
     }
 }
+     
+
+
+    
+
+
+    
+    

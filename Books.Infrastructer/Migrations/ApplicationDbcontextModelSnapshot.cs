@@ -46,6 +46,10 @@ namespace Books.Infrastructer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhotoPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateOnly>("PublishDate")
                         .HasColumnType("date");
 

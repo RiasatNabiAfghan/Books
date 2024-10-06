@@ -19,6 +19,7 @@
                         <th>ISBN</th>
                         <th>Author</th>
                         <th>PublishDate</th>
+                        <th>Photo</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -79,6 +80,11 @@
                             <span asp-validation-for="PublishDate" class="text-danger"></span>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="Photo" class="control-label"></label>
+                        <input asp-for="Photo" class="form-control" />
+                        <span asp-validation-for="Photo" class="text-danger"></span>
+                    </div>
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-secondary">Save</button>
@@ -88,7 +94,7 @@
         </div>
     </div>
 </div>
-<!-- The Edit Modal -->
+ <!-- The Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -97,18 +103,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editfrm" method="post">
+                <form id="editfrm" method="post" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     
                     <div class="row mb-3">
-                         <input asp-for="Id"  type="hidden" />
-                          <div class="col-md-6">
+                        <input asp-for="Id" type="hidden" />
+                        <div class="col-md-6">
                             <label asp-for="ISBN" class="form-label"></label>
                             <input asp-for="ISBN" id="ISBN" class="form-control" placeholder="Enter ISBN" />
                             <span asp-validation-for="ISBN" class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="BookName" class="form-label">BookName</label>
+                            <label asp-for="BookName" class="form-label">Book Name</label>
                             <input asp-for="BookName" class="form-control" placeholder="Enter Book Name" />
                             <span asp-validation-for="BookName" class="text-danger"></span>
                         </div>
@@ -134,11 +140,19 @@
                             <span asp-validation-for="Author" class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="PublishDate" class="form-label">PublishDate</label>
+                            <label asp-for="PublishDate" class="form-label">Publish Date</label>
                             <input asp-for="PublishDate" class="form-control" type="date" />
                             <span asp-validation-for="PublishDate" class="text-danger"></span>
                         </div>
                     </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="Photo" class="form-label">Upload Image</label>
+                            <input type="file" name="Photo" class="form-control" accept="image/*" />
+                        </div>
+                    </div>
+                   
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-secondary">Save</button>
                     </div>
@@ -148,38 +162,72 @@
     </div>
 </div>
 
+<!-- Modal for displaying the image -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Book Image" style="max-width: 100%; height: auto;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 @section myscript {
     <script>
-        $(document).ready(function () {
-            $("#listbooks").DataTable({
-                "ajax": {
-                    "url": "/Book/GetBooks",
-                    "type": "GET",
-                    "dataType": "json"
-                },
-                "columns": [
-                    { "data": "id" },
-                    { "data": "bookName" },
-                    { "data": "title" },
-                    { "data": "description" },
-                    { "data": "isbn" },
-                    { "data": "author" },
-                    { "data": "publishDate" },
-                    {
-                        "data": null,
-                        "className": "text-center",
-                        "render": function (data, type, row) {
-                            return `
-                            <a class="btn btn-primary" onclick="loadBook(${row.id})" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil"></i> Edit</a>
-                            <a class="btn btn-danger" onclick="deleteConfirm(${row.id})"><i class="bi bi-trash"></i> Delete</a>`;
-                        }
-                    }
-                ],
-                "language": {
-                    "empty": "No Record"
+     $(document).ready(function () {
+    $("#listbooks").DataTable({
+        "ajax": {
+            "url": "/Book/GetBooks",
+            "type": "GET",
+            "dataType": "json"
+        },
+        "columns": [
+            { "data": "id" },
+            { "data": "bookName" },
+            { "data": "title" },
+            { "data": "description" },
+            { "data": "isbn" },
+            { "data": "author" },
+            { "data": "publishDate" },
+            {
+                "data": "photoPath",
+                "render": function (data, type, row) {
+                    return data ? `
+                        <img src="${data}" 
+                             style="max-width: 80px; height: auto; border-radius: 10px; border: 1px solid #ddd; padding: 5px;" alt="Book Image" class="thumbnail"   data-full="${data}" />` : 'No Image';
                 }
-            });
-        });
+            },
+            {
+                "data": null,
+                "className": "text-center",
+                "render": function (data, type, row)
+                {
+                    return ` <a class="btn btn-primary" onclick="loadBook(${row.id})" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil"></i> Edit</a><a class="btn btn-danger" onclick="deleteConfirm(${row.id})"><i class="bi bi-trash"></i> Delete</a>`;
+                }
+            }
+        ],
+        "language": {
+            "empty": "No Record"
+        }
+    });
+
+    // Event listener for image click
+    $('#listbooks tbody').on('click', '.thumbnail', function ()
+    {
+        var fullImageSrc = $(this).data('full'); // Get the full image path
+        $('#modalImage').attr('src', fullImageSrc); // Set the src of the modal image
+        $('#imageModal').modal('show'); // Show the modal
+    });
+});
+
 
         $('#studentForm').on('submit', function (e) {
             e.preventDefault();
@@ -218,52 +266,63 @@
             });
         });
 
-
-        $('#editfrm').on('submit', function (e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                url: "Book/UpdateBook",
-                type: $(this).attr('method'),
-                data: $(this).serialize(),
-                dataType: "json",
-                success: function (response) {
-                   
-                    $('#editModal').modal('hide');
-                    $("#listbooks").DataTable().ajax.reload();
-                    notification("success","Record has beed Updated successfully!", "success");
-                },
-                error: function (xhr, status, error) {
-                    notification("error","An Error Has beed Occured Pleas Try Again!", "error"+status);
-                }
-            });
-        });
-        function loadBook(id) {
-            $.ajax({
-                url: "Book/GetBook",
-                type: "GET",
-                data: { id: id },
-                dataType: "json",
-                success: function (response) {
-                    console.log(response); // Log the entire response
-                    if (response.data) {
-                        for (var propName in response.data) {
-                            if (response.data.hasOwnProperty(propName)) {
-                                var value = response.data[propName];
-
-                                // Adjust for ISBN property name
-                                var capitalizedPropName = propName === 'isbn' ? 'ISBN' : propName.charAt(0).toUpperCase() + propName.slice(1);
-                                var inputField = $('#editfrm input[id="' + capitalizedPropName + '"]');
-                                    inputField.val(value);
-                            }
-                        }
-                    }
-                },
-                error: function (xhr, status, error) {
-                    notification("error", "An Error Has Occurred Please Try Again!", "error");
-                }
-            });
+ $('#editfrm').on('submit', function (e) {
+    e.preventDefault();
+    
+    // Create a FormData object to hold the form data
+    var formData = new FormData(this);
+    
+    $.ajax({
+        url: '/Book/UpdateBook', // URL to your UpdateBook action
+        type: 'POST',
+        data: formData,
+        contentType: false, // Important for file uploads
+        processData: false, // Important for file uploads
+        dataType: 'json',
+        success: function (response) {
+            $('#editModal').modal('hide'); // Hide the modal
+            $("#listbooks").DataTable().ajax.reload(); // Reload the DataTable
+            notification("success", "Record has been updated successfully!", "success");
+        },
+        error: function (xhr, status, error) {
+            notification("error", "An error has occurred. Please try again!", "error");
         }
+    });
+});
+
+
+ 
+function loadBook(id) {
+    $.ajax({
+        url: "Book/GetBook",
+        type: "GET",
+        data: { id: id },
+        dataType: "json",
+        success: function (response) {
+            if (response.data) {
+                for (var propName in response.data) {
+                    if (response.data.hasOwnProperty(propName)) {
+                        var value = response.data[propName];
+                        // Adjust for ISBN property name
+                        var capitalizedPropName = propName === 'isbn' ? 'ISBN' : propName.charAt(0).toUpperCase() + propName.slice(1);
+                        var inputField = $('#editfrm input[id="' + capitalizedPropName + '"]');
+                        inputField.val(value);
+                    }
+                }
+            }
+        },
+        error: function (xhr, status, error) {
+            notification("error", "An Error Has Occurred Please Try Again!", "error");
+        }
+    });
+}
+
+
+
+
+
+
+
         function deleteConfirm(id) {
             Swal.fire({
                 title:"Are You Sure",
@@ -301,14 +360,8 @@
             })
 
         }
-
-    
-
-
     </script>
 }
 @Html.Partial("_ValidationScriptsPartial")
 
 
-
- 
