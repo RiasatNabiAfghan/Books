@@ -25,5 +25,8 @@ namespace Books.Application.DTO.Book
         public DateOnly PublishDate { get; set; }
         public IFormFile Photo { get; set; }
         public required string PhotoPath { get; set; }
+        //for pdf
+        public IFormFile PdfFile { get; set; } 
+        public required string PdfPath { get; set; }
     }
 }

@@ -2,9 +2,7 @@
 using Books.Application.Fectuter.Request.Command;
 using Books.Application.Fectuter.Request.query;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.Xml;
 namespace Books.Controllers
 {
     public class BookController : Controller
@@ -34,9 +32,7 @@ namespace Books.Controllers
             var findId = await mediator.Send(new GetBookByIdRequest { Id = Id });
             return Json(new { data = findId });
         }
-
-
-
+         
 
         [HttpPost]
         public async Task<IActionResult> AddBooks(BookDTO bookDTO)
@@ -46,27 +42,16 @@ namespace Books.Controllers
                 bookDTO.PhotoPath = await UploadImageAsync(bookDTO.Photo);
             }
 
+            if (bookDTO.PdfFile != null)
+            {
+                bookDTO.PdfPath = await UploadPdfAsync(bookDTO.PdfFile); // Handle PDF upload
+            }
+
             var addingBooks = await mediator.Send(new AddBookRequest { Bookdto = bookDTO });
             return Json(new { data = addingBooks });
         }
 
-
-        private async Task<string> UploadImageAsync(IFormFile photo)
-        {
-            string filename = Guid.NewGuid().ToString() + "-" + photo.FileName;
-            string uploadFolder = Path.Combine(hc.WebRootPath, "images");
-            string filePath = Path.Combine(uploadFolder, filename);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await photo.CopyToAsync(stream);  
-            }
-
-            return "/images/" + filename; 
-        }
-
-
-
+       
         [HttpPost]
         public async Task<IActionResult> UpdateBook(BookDTO updateBookDto)
         {
@@ -80,10 +65,38 @@ namespace Books.Controllers
 
                 updateBookDto.PhotoPath = await UploadImageAsync(updateBookDto.Photo);
             }
+           
+            // Check if a new PDF is being uploaded
+            if (updateBookDto.PdfFile != null)
+            {
+                // Remove the existing PDF if it exists
+                if (!string.IsNullOrEmpty(updateBookDto.PdfPath))
+                {
+                    RemoveExistingPdf(updateBookDto.PdfPath);
+                }
+
+                // Upload the new PDF
+                updateBookDto.PdfPath = await UploadPdfAsync(updateBookDto.PdfFile);
+            }
 
             var updatedBookId = await mediator.Send(new UpdateBookRequest { UpdateBookDto = updateBookDto });
             return Json(new { data = updatedBookId });
         }
+         
+
+
+
+
+        [HttpPost]
+        public IActionResult DeletBooks(BookDTO bookDTO)
+        {
+           var removebooks=mediator.Send(new DeleteBooksRequest { BookDTO=bookDTO});
+            return Json(new {data=removebooks});
+        }
+        /// <summary>
+        /// ////////////////// //private Methods////////////////
+        /// </summary>
+        /// <param name="photoPath"></param>
 
         private void RemoveExistingImage(string photoPath)
         {
@@ -96,22 +109,49 @@ namespace Books.Controllers
         }
 
 
-
-
-
-
-        [HttpPost]
-        public IActionResult DeletBooks(BookDTO bookDTO)
+        private void RemoveExistingPdf(string pdfPath)
         {
-           var removebooks=mediator.Send(new DeleteBooksRequest { BookDTO=bookDTO});
-            return Json(new {data=removebooks});
+            if (System.IO.File.Exists(pdfPath))
+            {
+                System.IO.File.Delete(pdfPath);
+            }
         }
 
 
 
+        private async Task<string> UploadImageAsync(IFormFile photo)
+        {
+            string filename = Guid.NewGuid().ToString() + "-" + photo.FileName;
+            string uploadFolder = Path.Combine(hc.WebRootPath, "images");
+            string filePath = Path.Combine(uploadFolder, filename);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await photo.CopyToAsync(stream);
+            }
+
+            return "/images/" + filename;
+        }
 
 
+        private async Task<string> UploadPdfAsync(IFormFile pdfFile)
+        {
+            string filename = Guid.NewGuid().ToString() + "-" + pdfFile.FileName;
+            string uploadFolder = Path.Combine(hc.WebRootPath, "pdfs");
+            string filePath = Path.Combine(uploadFolder, filename);
 
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await pdfFile.CopyToAsync(stream);
+            }
+
+            return "/pdfs/" + filename; // Return the virtual path
+        }
 
     }
 }

@@ -24,7 +24,8 @@ namespace Books.Domain.NormalDomin
         public string Author {  get; set; }
         [Required]
         public DateOnly PublishDate { get; set; }
-        public string PhotoPath { get; set; }   
+        public string PhotoPath { get; set; }
+        public string PdfPath { get; set; }  
     }
      
 }

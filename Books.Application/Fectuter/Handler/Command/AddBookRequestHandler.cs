@@ -25,6 +25,12 @@ namespace Books.Application.Fectuter.Handler.Command
             {
                 bookModel.PhotoPath = request.Bookdto.PhotoPath;
             }
+            //for pdf
+            if (!string.IsNullOrEmpty(request.Bookdto.PdfPath))
+            {
+                bookModel.PdfPath = request.Bookdto.PdfPath; // Set the PDF path for database
+            }
+
             uniteofwork.BookRepository.AddBook(bookModel);
              uniteofwork.SaveChanges();
             var bookDto = mapper.Map<BookDTO>(bookModel);
